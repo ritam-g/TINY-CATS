@@ -6,7 +6,17 @@ export async function createCatService(payload: object) {
 export async function getAllCatService() {
     return await catModel.find();
 }
-export async function getSingleCatService(id) {
+export async function getSingleCatService(id: string) {
     return await catModel.findById(id);
 }
+export async function getRecomandedCatService(apartmentFriendly: boolean, kidsFriendly: boolean) {
+    return await catModel.find({
+        apartmentFriendly,
+        kidsFriendly
+    })
+}
+export async function getQueryCatService(query: string) {
+    return await catModel.find({ name: query })
+}
+
 
