@@ -1,13 +1,11 @@
-import axios from "axios"
+import axios from "axios";
 
-export const recommendCats = async (kidsFriendly: boolean, apartmentFriendly: boolean) => {
-
-    const response = await axios.post('http://localhost:3000/api/cats/recommend', {
-        kidsFriendly,
-        apartmentFriendly
+export async function recommendCatsTool(apartmentFriendly: boolean, kidsFriendly: boolean) {
+    // here will be the recommend call logig right
+    const response = await axios.post("http://localhost:3000/api/aiRecommend/ask", {
+        apartmentFriendly,
+        kidsFriendly
     })
 
-    return response.data
-
+    return response.data.data
 }
-

@@ -1,40 +1,42 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { recommendCats } from "./tools/recommendCats.tool.ts";
-
-const NWS_API_BASE = "https://api.weather.gov";
-const USER_AGENT = "weather-app/1.0";
+import { recommendCatsTool } from "./tools/recommendCats.tool.ts";
 
 // Create server instance
 const server = new McpServer({
-    name: "tiny-cats",
+    name: "tiny-cats-mcp-server",
     version: "1.0.0",
 });
 
-server.registerTool("recommendCats", {
-    title: "Recommend Cats",
-    description: "Recommends cat breeds based on user preferences for kids and apartment living.",
-    inputSchema: {
-        kidsFriendly: z.boolean().describe("Indicates if the user prefers cat breeds that are good with kids."),
-        apartmentFriendly: z.boolean().describe("Indicates if the user prefers cat breeds that are suitable for apartment living.")
-    }
 
-},
-    async ({ kidsFriendly, apartmentFriendly }) => {
-        const result = await recommendCats(kidsFriendly, apartmentFriendly)
+// regester the tools
+
+server.registerTool(
+    // name
+    "getCatBreedRecommendations",
+    // middleware
+    {
+        title: "Get Cat Breed Recommendations",
+        description: "Get cat breed recommendations based on user preferences of apartment friendliness and kid friendliness.",
+        inputSchema: z.object({
+            apartmentFriendly: z.boolean(),
+            kidsFriendly: z.boolean()
+        }),
+    },  
+    // controller
+    async ({ apartmentFriendly, kidsFriendly }) => {
+        // here will be the logic to get the cat breed recommendations based on the user preferences
+        const result = await recommendCatsTool(apartmentFriendly, kidsFriendly)
         return {
-            content: [
-                {
-                    type: "text",
-                    text: JSON.stringify(result)
-                }
-            ]
+            content: [{
+                type: "text",
+                text: JSON.stringify(result)
+            }]
         }
     }
 )
 
-const transport = new StdioServerTransport();
-await server.connect(transport);
+// Start the server
+console.log("Starting MCP Server...");
 
-console.log("Starting MCP Server...")
