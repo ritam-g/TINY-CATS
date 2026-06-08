@@ -63,5 +63,5 @@ const transport = new StdioServerTransport()
 
 server.connect(transport)
 // Start the server
-console.log("Starting MCP Server...");
+console.error("Starting MCP Server...");
 
